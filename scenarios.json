@@ -1,0 +1,50 @@
+[
+  {
+    "id": "elec-1",
+    "category": "electricity",
+    "sender": "VK-POWERCUT (+91-9840291823)",
+    "severity": "High Severity Threat",
+    "isScam": true,
+    "indicators": ["Urgency Trigger", "Personal Mobile Number", "Malicious Short Link APK"],
+    "threat_analysis": {
+      "tactic": "Fear of utility disruption",
+      "escalation_path": "Helpline 1930 / DISCOM customer care"
+    }
+  },
+  {
+    "id": "upi-1",
+    "category": "upi",
+    "sender": "GooglePay / PhonePe Notification",
+    "severity": "Critical Financial Fraud",
+    "isScam": true,
+    "indicators": ["PIN for Receiving Money", "Collect Request", "Bogus Cashback"],
+    "threat_analysis": {
+      "tactic": "Greed / Reward deception",
+      "escalation_path": "Bank chargeback / 1930 immediate freeze"
+    }
+  },
+  {
+    "id": "kyc-1",
+    "category": "kyc",
+    "sender": "SBI-ALERT (+91-7685940321)",
+    "severity": "Credential Harvesting",
+    "isScam": true,
+    "indicators": ["Fake Domain", "10-Digit Sender", "Urgent Suspension"],
+    "threat_analysis": {
+      "tactic": "Credential phishing clone portal",
+      "escalation_path": "Block internet banking / File report on cybercrime.gov.in"
+    }
+  },
+  {
+    "id": "lottery-1",
+    "category": "lottery",
+    "sender": "WhatsApp (+92-3001234567)",
+    "severity": "Social Engineering Scam",
+    "isScam": true,
+    "indicators": ["International Number", "Advance Fee Request", "Unsolicited Prize"],
+    "threat_analysis": {
+      "tactic": "Advance-fee 419 fraud",
+      "escalation_path": "Block number & report to WhatsApp and 1930"
+    }
+  }
+]

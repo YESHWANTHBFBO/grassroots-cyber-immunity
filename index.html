@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grassroots Cyber-Immunity | Interactive Scam Spotting Platform</title>
+  <meta name="description" content="Empowering grassroots digital citizens with interactive scam & phishing awareness simulations." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif;
+    }
+    .pulse-alert {
+      animation: pulseAlert 2s infinite;
+    }
+    @keyframes pulseAlert {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-amber-500 selection:text-black">
+
+  <!-- Top Emergency & Helpline Bar -->
+  <header class="bg-gradient-to-r from-red-950 via-slate-900 to-amber-950 border-b border-slate-800 text-xs py-2 px-4 sticky top-0 z-50 shadow-md">
+    <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-2">
+      <div class="flex items-center space-x-2">
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-red-600 text-white animate-pulse">
+          <i class="fa-solid fa-phone-volume mr-1.5"></i> EMERGENCY
+        </span>
+        <span class="text-slate-300 font-medium">National Cyber Crime Helpline:</span>
+        <a href="tel:1930" class="text-amber-400 font-extrabold hover:underline tracking-wider text-sm">1930</a>
+        <span class="text-slate-500">|</span>
+        <a href="https://cybercrime.gov.in" target="_blank" class="text-cyan-400 hover:underline">cybercrime.gov.in</a>
+      </div>
+      <!-- Language Selector -->
+      <div class="flex items-center space-x-2">
+        <label for="langSelect" class="text-slate-400 font-medium"><i class="fa-solid fa-globe mr-1"></i> Language:</label>
+        <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded px-2.5 py-1 focus:ring-2 focus:ring-amber-500 outline-none cursor-pointer">
+          <option value="en">English</option>
+          <option value="hi">हिंदी (Hindi)</option>
+          <option value="ta">தமிழ் (Tamil)</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navbar -->
+  <nav class="bg-slate-950/80 backdrop-blur border-b border-slate-800/80 sticky top-9 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-amber-500/20">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+            Grassroots Cyber-Immunity
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">PWA READY</span>
+          </h1>
+          <p class="text-xs text-slate-400" id="subHeaderDesc">Interactive Phishing & Scam Spotter for Bharat</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-lg px-3 py-1.5 flex items-center space-x-2 text-xs">
+          <i class="fa-solid fa-medal text-amber-400"></i>
+          <span class="text-slate-400">Cyber Rakshak Score:</span>
+          <span id="userScore" class="font-bold text-amber-300">0 XP</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="max-w-6xl mx-auto px-4 pt-8 pb-6 text-center">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold mb-4">
+      <i class="fa-solid fa-graduation-cap"></i> UN SDG 4 & 9 Aligned • Viksit Bharat Digital Hygiene
+    </div>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight max-w-3xl mx-auto leading-tight" id="heroTitle">
+      Learn to Spot Online Scams <span class="bg-clip-text text-transparent bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-200">Before They Steal Your Money</span>
+    </h2>
+    <p class="text-sm md:text-base text-slate-400 max-w-2xl mx-auto mt-3" id="heroSubtitle">
+      Interactive, realistic simulations of fake electricity bills, bogus UPI collect requests, and scam lotteries. Safe, zero-risk sandbox for first-time digital citizens.
+    </p>
+
+    <!-- Category Filter Buttons -->
+    <div class="flex flex-wrap items-center justify-center gap-2 mt-6" id="filterButtons">
+      <button onclick="filterCategory('all')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-amber-500 text-slate-950 transition-all hover:bg-amber-400 shadow">All Scenarios</button>
+      <button onclick="filterCategory('electricity')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all">⚡ Electricity Bill SMS</button>
+      <button onclick="filterCategory('upi')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all">💳 UPI PIN & Collect Fraud</button>
+      <button onclick="filterCategory('kyc')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all">🏦 Bank KYC Expiry</button>
+      <button onclick="filterCategory('lottery')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all">🎁 KBC / Lucky Draw WhatsApp</button>
+    </div>
+  </section>
+
+  <!-- Main Simulator Layout -->
+  <main class="max-w-6xl mx-auto px-4 pb-12 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- Left: Scenario Selector Cards -->
+    <div class="lg:col-span-5 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+          <i class="fa-solid fa-list-check text-amber-400"></i> Select Practice Case
+        </h3>
+        <span class="text-xs text-slate-500" id="caseCount">4 Scenarios Available</span>
+      </div>
+
+      <div id="scenarioCardsContainer" class="space-y-3">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Quick 1930 Cyber Protocol Card -->
+      <div class="bg-gradient-to-br from-slate-900 to-slate-800/80 border border-red-500/30 rounded-2xl p-4 shadow-lg relative overflow-hidden">
+        <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-red-600/10 rounded-full blur-xl pointer-events-none"></div>
+        <h4 class="text-red-400 font-bold text-sm flex items-center gap-2 mb-1.5">
+          <i class="fa-solid fa-triangle-exclamation"></i> Golden Hour Rule in Financial Fraud
+        </h4>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          If you or someone in your village accidentally entered a UPI PIN or OTP to a fraudster:
+        </p>
+        <ul class="text-xs text-slate-400 mt-2 space-y-1 list-disc list-inside">
+          <li>Call <strong class="text-amber-300 font-semibold">1930</strong> immediately within 2 hours.</li>
+          <li>Banks can freeze the fraudulent transaction in the transit account!</li>
+          <li>File complaint on <span class="text-cyan-400 font-mono">cybercrime.gov.in</span>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Right: Interactive Sandbox Device Frame -->
+    <div class="lg:col-span-7 flex flex-col">
+      <div class="bg-slate-950 border border-slate-800 rounded-3xl p-4 md:p-6 shadow-2xl flex-1 flex flex-col justify-between">
+        
+        <!-- Simulation Header -->
+        <div class="border-b border-slate-800 pb-4 mb-4 flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+            <span class="text-xs font-mono text-slate-400 pl-2">SIMULATOR_SANDBOX_V1.0</span>
+          </div>
+          <span id="activeThreatBadge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">
+            High Severity Threat
+          </span>
+        </div>
+
+        <!-- Simulated Mobile Screen -->
+        <div class="bg-slate-900 border-2 border-slate-800 rounded-2xl p-4 shadow-inner relative my-auto">
+          <!-- Mobile Screen Header Bar -->
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800/80 mb-3 text-xs text-slate-400 font-mono">
+            <span id="senderDisplay"><i class="fa-solid fa-comment-sms mr-1.5 text-amber-400"></i> SMS from: +91-9876543210</span>
+            <span class="text-[11px] text-slate-500">Just Now</span>
+          </div>
+
+          <!-- Message Body with Interactive Spotting Clues -->
+          <div id="simulatedMessageBody" class="bg-slate-950 rounded-xl p-4 border border-slate-800 text-sm leading-relaxed font-sans text-slate-200">
+            <!-- Dynamic Message Content -->
+          </div>
+
+          <!-- Spotting Prompt -->
+          <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+            <span id="instructionText"><i class="fa-solid fa-hand-pointer text-amber-400 animate-bounce mr-1.5"></i> Tap highlighted suspicious areas or answer below:</span>
+          </div>
+        </div>
+
+        <!-- Decision Action Bar -->
+        <div class="mt-6">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3" id="decisionTitle">
+            What is your decision on this message?
+          </h4>
+          <div class="grid grid-cols-2 gap-3" id="actionButtons">
+            <button onclick="handleUserVerdict(false)" class="bg-red-600/20 hover:bg-red-600/30 border border-red-500/40 text-red-300 hover:text-red-200 font-bold py-3 px-4 rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-sm">
+              <i class="fa-solid fa-ban text-red-400"></i> 🚨 Flag as Scam / Fraud
+            </button>
+            <button onclick="handleUserVerdict(true)" class="bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 hover:text-emerald-200 font-bold py-3 px-4 rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-sm">
+              <i class="fa-solid fa-circle-check text-emerald-400"></i> ✅ Legitimate Message
+            </button>
+          </div>
+        </div>
+
+        <!-- Feedback & Red-Flag Diagnostic Panel -->
+        <div id="feedbackPanel" class="hidden mt-6 p-4 rounded-2xl border transition-all duration-300">
+          <div class="flex items-start gap-3">
+            <div id="feedbackIcon" class="text-2xl mt-0.5"></div>
+            <div class="flex-1">
+              <h4 id="feedbackTitle" class="font-bold text-sm mb-1"></h4>
+              <p id="feedbackExplanation" class="text-xs text-slate-300 leading-relaxed"></p>
+
+              <!-- Detailed Red Flags List -->
+              <div class="mt-3 bg-slate-950/60 rounded-xl p-3 border border-slate-800 text-xs">
+                <span class="font-bold text-amber-400 block mb-1.5"><i class="fa-solid fa-magnifying-glass-chart mr-1"></i> Anatomy of this Attack:</span>
+                <ul id="redFlagList" class="space-y-1 text-slate-300 list-disc list-inside"></ul>
+              </div>
+
+              <!-- Next Button -->
+              <div class="mt-3 flex justify-end">
+                <button onclick="nextScenario()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-4 py-2 rounded-lg transition-all flex items-center gap-1.5">
+                  Next Scenario <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-950 border-t border-slate-800/80 py-6 px-4 text-center text-xs text-slate-500 mt-auto">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+      <p>Grassroots Cyber-Immunity Project • Created for Hack for Social Cause & MY Bharat Portal</p>
+      <div class="flex items-center space-x-4">
+        <a href="https://github.com/your-username/grassroots-cyber-immunity" target="_blank" class="hover:text-amber-400 transition-colors">
+          <i class="fa-brands fa-github text-sm mr-1"></i> GitHub Repository
+        </a>
+        <a href="https://cybercrime.gov.in" target="_blank" class="hover:text-cyan-400 transition-colors">
+          National Cyber Crime Portal
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Simulation Application Logic Script -->
+  <script>
+    // Multilingual Scenarios Dataset
+    const scenariosData = [
+      {
+        id: "elec-1",
+        category: "electricity",
+        sender: "VK-POWERCUT (+91-9840291823)",
+        severity: "High Severity Threat",
+        isScam: true,
+        translations: {
+          en: {
+            title: "Urgent Electricity Disconnect Alert",
+            badge: "⚡ Electricity",
+            text: `Dear Consumer, your electricity power will be <span class="bg-red-500/20 text-red-300 px-1 rounded font-semibold border border-red-500/30" title="Artificial Urgency trigger">DISCONNECTED tonight at 9:30 PM</span> because previous month bill was not updated. Immediately call our officer at <span class="bg-amber-500/20 text-amber-300 px-1 rounded font-mono font-semibold border border-amber-500/30" title="Personal mobile number instead of official desk">8927192819</span> or install update APK from <span class="bg-purple-500/20 text-purple-300 px-1 rounded font-mono underline border border-purple-500/30" title="Suspicious short link">bit.ly/power-bill-fix</span>`,
+            redFlags: [
+              "Urgency & Panic Trigger: Threatening power cut off within hours.",
+              "Personal 10-digit mobile number given instead of official DISCOM customer care toll-free.",
+              "Third-party untrusted APK / bit.ly link instead of official electricity board portal or app."
+            ],
+            correctExplanation: "Excellent detection! Official electricity boards never ask consumers to call random 10-digit mobile numbers or install APK files via SMS links.",
+            wrongExplanation: "Careful! This is one of India's most widespread SMS scams. Victims who call are tricked into installing screen-sharing apps (AnyDesk/TeamViewer) and lose their bank balance."
+          },
+          hi: {
+            title: "बिजली कनेक्शन काटने की फर्जी चेतावनी",
+            badge: "⚡ बिजली बिल",
+            text: `प्रिय उपभोक्ता, आपका बिजली कनेक्शन <span class="bg-red-500/20 text-red-300 px-1 rounded font-semibold border border-red-500/30">आज रात 9:30 बजे काट दिया जाएगा</span> क्योंकि पिछले महीने का बिल अपडेट नहीं हुआ है। तुरंत बिजली अधिकारी से <span class="bg-amber-500/20 text-amber-300 px-1 rounded font-mono font-semibold border border-amber-500/30">8927192819</span> पर संपर्क करें या ऐप डाउनलोड करें <span class="bg-purple-500/20 text-purple-300 px-1 rounded font-mono underline border border-purple-500/30">bit.ly/power-bill-fix</span>`,
+            redFlags: [
+              "घबराहट पैदा करना: कुछ ही घंटों में बिजली काटने की धमकी देना।",
+              "आधिकारिक टोल-फ्री नंबर के बजाय किसी अज्ञात व्यक्ति का 10 अंकों का व्यक्तिगत मोबाइल नंबर।",
+              "असुरक्षित bit.ly लिंक से APK ऐप डाउनलोड करने का दबाव।"
+            ],
+            correctExplanation: "बहुत बढ़िया! बिजली विभाग कभी भी निजी मोबाइल नंबर पर कॉल करने या अनजान लिंक से APK डाउनलोड करने के लिए नहीं कहता।",
+            wrongExplanation: "सावधान! यह एक फर्जी संदेश है। इस पर कॉल करने से जालसाज स्क्रीन-शेयरिंग ऐप डाउनलोड करवाकर खाता खाली कर देते हैं।"
+          },
+          ta: {
+            title: "மின் இணைப்பு துண்டிப்பு போலி எச்சரிக்கை",
+            badge: "⚡ மின்சாரம்",
+            text: `அன்புள்ள பயனரே, கடந்த மாத பில் புதுப்பிக்கப்படாததால் உங்கள் <span class="bg-red-500/20 text-red-300 px-1 rounded font-semibold border border-red-500/30">மின் இணைப்பு இன்று இரவு 9:30 மணிக்கு துண்டிக்கப்படும்</span>. உடனடியாக எங்கள் அதிகாரியை <span class="bg-amber-500/20 text-amber-300 px-1 rounded font-mono font-semibold border border-amber-500/30">8927192819</span> என்ற எண்ணில் தொடர்பு கொள்ளவும் அல்லது <span class="bg-purple-500/20 text-purple-300 px-1 rounded font-mono underline border border-purple-500/30">bit.ly/power-bill-fix</span> பதிவிறக்கவும்.`,
+            redFlags: [
+              "அவசர பயமுறுத்தல்: இன்றிரவே மின்சாரம் துண்டிக்கப்படும் என்ற போலி மிரட்டல்.",
+              "அதிகாரப்பூர்வ எண்களுக்குப் பதிலாக தனிப்பட்ட 10 இலக்க மொபைல் எண்.",
+              "நம்பகமற்ற இணைய இணைப்பு (bit.ly APK link)."
+            ],
+            correctExplanation: "சிறந்த பாதுகாப்பு கவனிப்பு! மின் வாரியம் ஒருபோதும் தனிப்பட்ட மொபைல் எண்களையோ சந்தேகத்திற்கிடமான லிங்க்குகளையோ அனுப்பாது.",
+            wrongExplanation: "எச்சரிக்கை! இது ஒரு பொதுவான மோசடி. இந்த எண்களைத் தொடர்பு கொண்டால் உங்கள் வங்கிப் பணம் திருடப்படலாம்."
+          }
+        }
+      },
+      {
+        id: "upi-1",
+        category: "upi",
+        sender: "GooglePay / PhonePe Notification",
+        severity: "Critical Financial Fraud",
+        isScam: true,
+        translations: {
+          en: {
+            title: "Cashback Reward 'Collect' Request",
+            badge: "💳 UPI Scam",
+            text: `Congratulations! You received a cashback of <span class="bg-emerald-500/20 text-emerald-300 px-1 rounded font-bold border border-emerald-500/30">₹2,499</span> from UPI Rewards. <br><br>👉 <strong>Enter your UPI PIN to claim this cashback directly into your bank account.</strong> <br><br><span class="text-xs text-red-400 font-mono">[Prompt: UPI PIN required for ₹2,499]</span>`,
+            redFlags: [
+              "The Golden UPI Rule: You NEVER enter your UPI PIN to RECEIVE money.",
+              "UPI PIN is strictly required only to SEND or DEBIT money from your bank account.",
+              "Scammers send 'Collect' requests disguising them as cashback rewards."
+            ],
+            correctExplanation: "Spot on! Always remember: Entering a UPI PIN always deducts money from your account, it never deposits money into it.",
+            wrongExplanation: "Danger! Entering a UPI PIN will instantly DEBIT ₹2,499 from your account. You NEVER need to type a PIN to receive any payment."
+          },
+          hi: {
+            title: "UPI कैशबैक रिवॉर्ड का फर्जी अनुरोध",
+            badge: "💳 UPI धोखाधड़ी",
+            text: `बधाई हो! आपको UPI रिवॉर्ड से <span class="bg-emerald-500/20 text-emerald-300 px-1 rounded font-bold border border-emerald-500/30">₹2,499 का कैशबैक</span> मिला है। <br><br>👉 <strong>पैसे सीधे अपने बैंक खाते में प्राप्त करने के लिए अपना UPI पिन दर्ज करें।</strong> <br><br><span class="text-xs text-red-400 font-mono">[पिन दर्ज करने का पॉपअप: ₹2,499]</span>`,
+            redFlags: [
+              "UPI का स्वर्णिम नियम: पैसे प्राप्त (Receive) करने के लिए कभी भी UPI पिन नहीं डाला जाता।",
+              "UPI पिन केवल पैसे भेजने (Debit) के लिए उपयोग होता है।",
+              "धोखेबाज 'पैसे कलेक्ट' करने का अनुरोध भेजकर उसे इनाम का नाम देते हैं।"
+            ],
+            correctExplanation: "बिल्कुल सही! पैसे प्राप्त करने के लिए पिन नहीं लगता। पिन डालने का मतलब है खाते से पैसे कटना।",
+            wrongExplanation: "सावधानी! UPI पिन डालते ही आपके खाते से ₹2,499 कट जाएंगे। किसी भी कैशबैक के लिए पिन की जरूरत नहीं होती।"
+          },
+          ta: {
+            title: "UPI கேஷ்பேக் போலி கோரிக்கை",
+            badge: "💳 UPI மோசடி",
+            text: `வாழ்த்துகள்! உங்களுக்கு <span class="bg-emerald-500/20 text-emerald-300 px-1 rounded font-bold border border-emerald-500/30">₹2,499 கேஷ்பேக்</span> கிடைத்துள்ளது. <br><br>👉 <strong>பணத்தைப் பெற உங்கள் UPI PIN ஐ உள்ளிடவும்.</strong>`,
+            redFlags: [
+              "பணம் பெறுவதற்கு ஒருபோதும் UPI PIN தேவைப்படாது.",
+              "UPI PIN என்பது உங்கள் கணக்கிலிருந்து பணத்தை அனுப்ப மட்டுமே.",
+              "பரிசு என்ற பெயரில் பணம் எடுக்கும் (Collect) கோரிக்கை."
+            ],
+            correctExplanation: "சரியான முடிவு! பணம் பெறுவதற்கு PIN தேவையில்லை.",
+            wrongExplanation: "ஆபத்து! PIN உள்ளீடு செய்தால் உங்கள் பணத்தை இழக்க நேரிடும்."
+          }
+        }
+      },
+      {
+        id: "kyc-1",
+        category: "kyc",
+        sender: "SBI-ALERT (+91-7685940321)",
+        severity: "Credential Harvesting",
+        isScam: true,
+        translations: {
+          en: {
+            title: "Bank Account Blocked (KYC Expiry)",
+            badge: "🏦 Bank KYC",
+            text: `Dear Customer, your SBI YONO account has been <span class="bg-red-500/20 text-red-300 px-1 rounded font-semibold border border-red-500/30">SUSPENDED today</span> due to unverified Aadhaar KYC. Update immediately to prevent permanent block: <span class="bg-purple-500/20 text-purple-300 px-1 rounded font-mono underline border border-purple-500/30">www.sbi-kyc-verify-portal.in/login</span>`,
+            redFlags: [
+              "Fake domain URL: Official bank portal is onlinesbi.sbi, never third-party .in sites.",
+              "SMS sent from an unverified 10-digit number instead of authorized banking header (e.g., SBIBNK).",
+              "Banks never block accounts suddenly via SMS links."
+            ],
+            correctExplanation: "Great job! Banks never ask you to update KYC over SMS links. KYC is only done at physical branches or within official net banking apps.",
+            wrongExplanation: "Be careful! That link leads to a clone phishing website that captures your internet banking password and OTP."
+          },
+          hi: {
+            title: "बैंक खाता बंद होने का फर्जी KYC संदेश",
+            badge: "🏦 बैंक KYC",
+            text: `प्रिय ग्राहक, आपका SBI YONO खाता आधार KYC अधूरा होने के कारण <span class="bg-red-500/20 text-red-300 px-1 rounded font-semibold border border-red-500/30">आज ब्लॉक कर दिया गया है</span>। स्थायी रोक से बचने के लिए तुरंत अपडेट करें: <span class="bg-purple-500/20 text-purple-300 px-1 rounded font-mono underline border border-purple-500/30">www.sbi-kyc-verify-portal.in/login</span>`,
+            redFlags: [
+              "फर्जी वेबसाइट लिंक: बैंक का असली पता onlinesbi.sbi होता है, कोई अनधिकृत .in डोमेन नहीं।",
+              "निजी मोबाइल नंबर से भेजा गया संदेश, बैंक के आधिकारिक हेडर (SBIBNK) से नहीं।",
+              "बैंक कभी भी SMS लिंक के जरिए KYC करने को नहीं कहते।"
+            ],
+            correctExplanation: "शाबाश! बैंक कभी भी SMS में लिंक भेजकर पासवर्ड या KYC नहीं मांगते।",
+            wrongExplanation: "गलत निर्णय! यह लिंक एक नकली वेबसाइट पर ले जाता है जहां आपका पासवर्ड और OTP चोरी हो जाता।"
+          },
+          ta: {
+            title: "வங்கி KYC காலாவதி போலி செய்தி",
+            badge: "🏦 வங்கி KYC",
+            text: `அன்புள்ள வாடிக்கையாளரே, உங்கள் வங்கி கணக்கு <span class="bg-red-500/20 text-red-300 px-1 rounded font-semibold border border-red-500/30">முடக்கப்பட்டுள்ளது</span>. உடனே KYC புதுப்பிக்கவும்: <span class="bg-purple-500/20 text-purple-300 px-1 rounded font-mono underline border border-purple-500/30">www.sbi-kyc-verify-portal.in/login</span>`,
+            redFlags: [
+              "போலி இணையதள முகவரி.",
+              "வங்கி ஒருபோதும் SMS லிங்க் மூலம் KYC கேட்காது.",
+              "அங்கீகரிக்கப்படாத எண்ணிலிருந்து வந்த செய்தி."
+            ],
+            correctExplanation: "சரியான விழிப்புணர்வு! வங்கி கிளைக்கு நேரில் சென்று மட்டுமே KYC செய்ய வேண்டும்.",
+            wrongExplanation: "தவறு! இது உங்கள் வங்கி தகவல்களை திருட அமைக்கப்பட்ட போலி தளம்."
+          }
+        }
+      },
+      {
+        id: "lottery-1",
+        category: "lottery",
+        sender: "WhatsApp (+92-3001234567)",
+        severity: "Social Engineering Scam",
+        isScam: true,
+        translations: {
+          en: {
+            title: "KBC 25 Lakh WhatsApp Lottery Letter",
+            badge: "🎁 Lottery Fraud",
+            text: `Congratulations! Your SIM number has won <span class="bg-amber-500/20 text-amber-300 px-1 rounded font-bold border border-amber-500/30">₹25,00,000 (25 Lakh)</span> in KBC All India SIM Lucky Draw! To claim your cheque, pay processing fee of ₹1,500 to SBI Cashier WhatsApp: <span class="bg-cyan-500/20 text-cyan-300 px-1 rounded font-mono font-bold border border-cyan-500/30">+92-3001234567</span>`,
+            redFlags: [
+              "International Country Code (+92) for an Indian lottery claim.",
+              "Advance-fee fraud: Asking for 'processing fees' or tax deposit before releasing prize.",
+              "You cannot win a lottery you never bought a ticket for!"
+            ],
+            correctExplanation: "Well spotted! No legitimate organization asks for upfront 'processing fees' to disburse prize money.",
+            wrongExplanation: "Never fall for this! Once you pay ₹1,500, the scammers will ask for more under the guise of GST and registration fees, and disappear."
+          },
+          hi: {
+            title: "KBC 25 लाख लॉटरी का फर्जी व्हाट्सएप संदेश",
+            badge: "🎁 लॉटरी फर्जीवाड़ा",
+            text: `बधाई हो! आपके सिम नंबर ने KBC लकी ड्रा में <span class="bg-amber-500/20 text-amber-300 px-1 rounded font-bold border border-amber-500/30">₹25,00,000 (25 लाख)</span> जीते हैं! चेक प्राप्त करने के लिए कृपया ₹1,500 प्रोसेसिंग फीस इस नंबर पर भेजें: <span class="bg-cyan-500/20 text-cyan-300 px-1 rounded font-mono font-bold border border-cyan-500/30">+92-3001234567</span>`,
+            redFlags: [
+              "विदेशी देश का कोड (+92) जो भारत का नहीं है।",
+              "इनाम देने से पहले 'प्रोसेसिंग फीस' या टैक्स के नाम पर पैसों की मांग।",
+              "जिस लॉटरी का टिकट ही नहीं खरीदा, उसमें इनाम कैसे मिल सकता है!"
+            ],
+            correctExplanation: "सही उत्तर! कोई भी असली लॉटरी या कंपनी इनाम देने से पहले अग्रिम फीस नहीं मांगती।",
+            wrongExplanation: "धोखा! ₹1,500 भेजने के बाद वे टैक्स के नाम पर और पैसे मांगेंगे और फिर फोन बंद कर देंगे।"
+          },
+          ta: {
+            title: "KBC 25 லட்சம் போலி லாட்டரி",
+            badge: "🎁 லாட்டரி மோசடி",
+            text: `வாழ்த்துகள்! நீங்கள் <span class="bg-amber-500/20 text-amber-300 px-1 rounded font-bold border border-amber-500/30">₹25 லட்சம்</span> வென்றுள்ளீர்கள். பரிசுத் தொகையைப் பெற ₹1,500 செயலாக்க கட்டணம் செலுத்தவும்: <span class="bg-cyan-500/20 text-cyan-300 px-1 rounded font-mono font-bold border border-cyan-500/30">+92-3001234567</span>`,
+            redFlags: [
+              "வெளிநாட்டு எண் (+92).",
+              "பரிசுக்கு முன் முன்பணம் கேட்பது மோசடியின் அடையாளம்.",
+              "லாட்டரி சீட்டு வாங்காமல் பரிசு கிடைக்காது."
+            ],
+            correctExplanation: "சரியான முடிவு! இது ஒரு பொதுவான முன்பண மோசடி.",
+            wrongExplanation: "எச்சரிக்கை! முன்பணம் செலுத்தினால் முழு பணமும் பறிபோகும்."
+          }
+        }
+      }
+    ];
+
+    // App State
+    let currentLang = 'en';
+    let currentCategory = 'all';
+    let currentScenarioIndex = 0;
+    let userScore = 0;
+    let filteredScenarios = [...scenariosData];
+
+    // DOM Elements
+    const scenarioCardsContainer = document.getElementById('scenarioCardsContainer');
+    const senderDisplay = document.getElementById('senderDisplay');
+    const activeThreatBadge = document.getElementById('activeThreatBadge');
+    const simulatedMessageBody = document.getElementById('simulatedMessageBody');
+    const feedbackPanel = document.getElementById('feedbackPanel');
+    const feedbackIcon = document.getElementById('feedbackIcon');
+    const feedbackTitle = document.getElementById('feedbackTitle');
+    const feedbackExplanation = document.getElementById('feedbackExplanation');
+    const redFlagList = document.getElementById('redFlagList');
+    const scoreElement = document.getElementById('userScore');
+
+    function initApp() {
+      renderScenarioCards();
+      loadScenario(currentScenarioIndex);
+    }
+
+    function renderScenarioCards() {
+      scenarioCardsContainer.innerHTML = '';
+      filteredScenarios.forEach((sc, idx) => {
+        const trans = sc.translations[currentLang] || sc.translations['en'];
+        const isSelected = idx === currentScenarioIndex;
+        const card = document.createElement('div');
+        card.className = `p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
+          isSelected 
+            ? 'bg-amber-500/10 border-amber-500 text-white shadow-md' 
+            : 'bg-slate-950/60 border-slate-800 hover:border-slate-700 text-slate-300'
+        }`;
+        card.onclick = () => {
+          currentScenarioIndex = idx;
+          renderScenarioCards();
+          loadScenario(idx);
+        };
+        card.innerHTML = `
+          <div>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full ${isSelected ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-400'} mb-1 inline-block">
+              ${trans.badge}
+            </span>
+            <h4 class="text-xs font-semibold mt-1">${trans.title}</h4>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs ${isSelected ? 'text-amber-400' : 'text-slate-600'}"></i>
+        `;
+        scenarioCardsContainer.appendChild(card);
+      });
+      document.getElementById('caseCount').innerText = `${filteredScenarios.length} Scenarios Available`;
+    }
+
+    function loadScenario(index) {
+      if (index >= filteredScenarios.length) return;
+      const scenario = filteredScenarios[index];
+      const trans = scenario.translations[currentLang] || scenario.translations['en'];
+
+      senderDisplay.innerHTML = `<i class="fa-solid fa-comment-dots mr-1.5 text-amber-400"></i> ${scenario.sender}`;
+      activeThreatBadge.innerText = scenario.severity;
+      simulatedMessageBody.innerHTML = trans.text;
+
+      // Reset Feedback
+      feedbackPanel.classList.add('hidden');
+    }
+
+    function handleUserVerdict(userChoseLegitimate) {
+      const scenario = filteredScenarios[currentScenarioIndex];
+      const trans = scenario.translations[currentLang] || scenario.translations['en'];
+      
+      feedbackPanel.classList.remove('hidden');
+
+      // If scenario is scam, and user flagged as scam (userChoseLegitimate === false), then user is correct!
+      const isCorrect = (scenario.isScam && !userChoseLegitimate) || (!scenario.isScam && userChoseLegitimate);
+
+      if (isCorrect) {
+        userScore += 100;
+        scoreElement.innerText = `${userScore} XP`;
+        feedbackPanel.className = 'mt-6 p-4 rounded-2xl border transition-all duration-300 bg-emerald-950/40 border-emerald-500/40 text-emerald-200';
+        feedbackIcon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+        feedbackTitle.innerText = currentLang === 'hi' ? 'शानदार पहचान! (+100 XP)' : 'Accurate Threat Detection! (+100 XP)';
+        feedbackExplanation.innerText = trans.correctExplanation;
+      } else {
+        feedbackPanel.className = 'mt-6 p-4 rounded-2xl border transition-all duration-300 bg-red-950/40 border-red-500/40 text-red-200';
+        feedbackIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-400"></i>';
+        feedbackTitle.innerText = currentLang === 'hi' ? 'धोखा! यह एक साइबर हमला था' : 'Vulnerable! You Walked Into a Trap';
+        feedbackExplanation.innerText = trans.wrongExplanation;
+      }
+
+      // Populate Red Flags
+      redFlagList.innerHTML = '';
+      trans.redFlags.forEach(rf => {
+        const li = document.createElement('li');
+        li.innerText = rf;
+        redFlagList.appendChild(li);
+      });
+    }
+
+    function nextScenario() {
+      if (currentScenarioIndex < filteredScenarios.length - 1) {
+        currentScenarioIndex++;
+      } else {
+        currentScenarioIndex = 0;
+      }
+      renderScenarioCards();
+      loadScenario(currentScenarioIndex);
+    }
+
+    function filterCategory(cat) {
+      currentCategory = cat;
+      if (cat === 'all') {
+        filteredScenarios = [...scenariosData];
+      } else {
+        filteredScenarios = scenariosData.filter(s => s.category === cat);
+      }
+      currentScenarioIndex = 0;
+
+      // Update button styling
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all';
+      });
+      event.target.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-amber-500 text-slate-950 transition-all hover:bg-amber-400 shadow';
+
+      renderScenarioCards();
+      loadScenario(0);
+    }
+
+    function changeLanguage(lang) {
+      currentLang = lang;
+      renderScenarioCards();
+      loadScenario(currentScenarioIndex);
+    }
+
+    // Initialize on page load
+    window.onload = initApp;
+  </script>
+</body>
+</html>
